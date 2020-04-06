@@ -51,13 +51,19 @@ functions:
     
 
   # TODO: Configure this function
-  # GetTodos:
-  # CreateTodo:
-  #   handler: src/lambda/http/createTodo.handler
-  #   events:
-  #     - http:
-  #         method: post
-  #         path: todos
+  CreateTodo:
+    handler: src/lambda/http/createTodo.handler
+    events:
+      - http:
+          method: post
+          path: todos
+          cors: true
+    iamRoleStatementsName: ${self:service.name}-create-todo-role-${self:provider.stage}
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
 
   # TODO: Configure this function
   # UpdateTodo:
