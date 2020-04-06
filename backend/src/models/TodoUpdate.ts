@@ -1,5 +1,5 @@
-export interface TodoUpdate {
-  name: string
-  dueDate: string
-  done: boolean
-}
+// export interface TodoUpdate {
+//   name: string
+//   dueDate: string
+//   done: boolean
+// }
