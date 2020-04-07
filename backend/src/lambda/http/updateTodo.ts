@@ -24,6 +24,7 @@ return {
 }
 }
 
+// Reference for updating dynamo DB from : https://www.dynamodbguide.com/
 async function updateTodo( updatedTodo,todoId, todosTable){
     console.log(`Updated Todo value: ${updatedTodo.name} , ${updatedTodo.dueDate}, ${updatedTodo.done}, ${todoId}, ${todosTable}`)
     return await docClient
@@ -31,11 +32,11 @@ async function updateTodo( updatedTodo,todoId, todosTable){
             TableName: todosTable,
             Key: {  "todoId": todoId },
             ConditionExpression: 'attribute_exists(todoId)',
-            UpdateExpression: 'set #n = :a, dueDate = :b, done = :c',
+            UpdateExpression: 'set #n = :x, dueDate = :y, done = :z',
             ExpressionAttributeValues:{
-              ":a": updatedTodo['name'],
-              ":b": updatedTodo.dueDate,
-              ":c": updatedTodo.done 
+              ":x": updatedTodo['name'],
+              ":y": updatedTodo.dueDate,
+              ":z": updatedTodo.done 
             },
             ExpressionAttributeNames:{
               "#n": "name"

@@ -248,48 +248,4 @@ resources:
         KmsKeyId: !Ref KMSKey
 
 
-      #   [
-      #     {
-      #         "todoId": "aadb86c7-e421-4b7e-ba5d-bff001352306",
-      #         "createdAt": "2020-04-06T23:54:19.340Z",
-      #         "name": "Clean house",
-      #         "userId": "1",
-      #         "done": "false",
-      #         "dueDate": "2019-06-11"
-      #     },
-      #     {
-      #         "todoId": "2",
-      #         "userId": "1",
-      #         "attachmentUrl": "clothes.png",
-      #         "dueDate": "11:32:26.694389",
-      #         "createdAt": "11:32:26.694389",
-      #         "name": "clean the house",
-      #         "done": "true"
-      #     },
-      #     {
-      #         "todoId": "3",
-      #         "userId": "1",
-      #         "attachmentUrl": "clothes.png",
-      #         "dueDate": "11:32:26.694389",
-      #         "createdAt": "11:32:26.694389",
-      #         "name": "Read the books",
-      #         "done": "true"
-      #     },
-      #     {
-      #         "todoId": "71243d6d-ab0e-4597-945a-c1adb917ea8b",
-      #         "createdAt": "2020-04-06T20:21:03.408Z",
-      #         "name": "Water flowers",
-      #         "userId": "1",
-      #         "attachmentUrl": "this should be attachment url",
-      #         "dueDate": "2019-06-11"
-      #     },
-      #     {
-      #         "todoId": "1",
-      #         "userId": "1",
-      #         "attachmentUrl": "clothes.png",
-      #         "dueDate": "string",
-      #         "createdAt": "11:32:26.694389",
-      #         "name": "wash the clothes",
-      #         "done": "true"
-      #     }
-      # ]
+      
