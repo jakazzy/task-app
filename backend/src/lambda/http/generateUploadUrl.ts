@@ -23,18 +23,18 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageId}`
 
   updateItem(imageUrl, todoId, todosTable)
-  const newItem ={
-      url: url ,
-      uploadUrl: imageUrl
-    }
+  // const newItem ={
+      
+  //   }
 
   return {
     statusCode: 200,
     headers: {
-        'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
     },
     body: JSON.stringify({
-        newItem
+      url: url ,
+      uploadUrl: imageUrl
     })
 }
 }

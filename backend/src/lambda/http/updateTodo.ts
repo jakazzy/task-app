@@ -12,17 +12,15 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object
  const result = await updateTodo(updatedTodo, todoId, todosTable).then(response => response.Attributes)
-
+ console.log('New updated item: ', result)
 
 
 return {
     statusCode: 200,
     headers: {
-        'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*',
     },
-    body: JSON.stringify({
-      result
-    })
+    body: ''
 }
 }
 
