@@ -99,14 +99,3 @@ handler.use(
   })
 )
 
-// async function getSecret(){
-//   if (cachedSecret) return cachedSecret
-
-//   const data = await client
-//   .getSecretValue({
-//     SecretId : secretId
-//   }).promise()
-
-//   cachedSecret = data.SecretString
-//   return JSON.parse(cachedSecret)
-// }
