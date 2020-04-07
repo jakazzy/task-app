@@ -90,7 +90,12 @@ functions:
       - http:
           method: delete
           path: todos/{todoId}
-    
+    iamRoleStatementsName: ${self:service.name}-delete-todo-role-${self:provider.stage}
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
     
 
   # TODO: Configure this function
