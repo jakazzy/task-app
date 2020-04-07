@@ -38,8 +38,7 @@ async function createTodo(userId: string, todoId: string, event: any) {
       userId,
       createdAt,
       todoId,
-      ...newTodo,
-      attachmentUrl: `this should be attachment url`
+      ...newTodo
     }
     console.log('Storing new item: ', newItem)
   
