@@ -1,6 +1,7 @@
-import { CustomAuthorizerEvent, CustomAuthorizerHandler, CustomAuthorizerResult } from 'aws-lambda'
+import { CustomAuthorizerEvent, CustomAuthorizerResult } from 'aws-lambda'
 import 'source-map-support/register'
-import * as AWS  from 'aws-sdk'
+import * as middy from 'middy'
+import { secretsManager } from 'middy/middlewares'
 
 import { verify, decode } from 'jsonwebtoken'
 import { createLogger } from '../../utils/logger'
@@ -8,24 +9,24 @@ import { createLogger } from '../../utils/logger'
 import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
 
+
 const logger = createLogger('auth')
 // const auth0secret = process.env.AUTH_0_SECRET
 const secretId = process.env.AUTH_0_SECRET_ID
 const secretField = process.env.AUTH_0_SECRET_FIELD
 
-const client = new AWS.SecretsManager()
-let cachedSecret:string
+
 
 // TODO: Provide a URL that can be used to download a certificate that can be used
 // to verify JWT token signature.
 // To get this URL you need to go to an Auth0 page -> Show Advanced Settings -> Endpoints -> JSON Web Key Set
 // const jwksUrl = '...'
 
-export const handler: CustomAuthorizerHandler = async (event: CustomAuthorizerEvent): Promise<CustomAuthorizerResult> => {
+export const handler = middy(async (event: CustomAuthorizerEvent , context): Promise<CustomAuthorizerResult> => {
   console.log('processing event: ', event)
   logger.info('Authorizing a user', event.authorizationToken)
   try {
-    const jwtToken = await verifyToken(event.authorizationToken)
+    const jwtToken = await verifyToken(event.authorizationToken , context.AUTH0_SECRET[secretField])
     logger.info('User was authorized', jwtToken)
 
     return {
@@ -58,15 +59,14 @@ export const handler: CustomAuthorizerHandler = async (event: CustomAuthorizerEv
       }
     }
   }
-}
+})
 
-async function verifyToken(authHeader: string): Promise<JwtPayload> {
+async function verifyToken(authHeader: string, secret:string): Promise<JwtPayload> {
   const token = getToken(authHeader)
   const jwt: Jwt = decode(token, { complete: true }) as Jwt
   console.log("jwt: ",jwt)
 
-  const secretObject:any = await getSecret()
-  const secret = secretObject[ secretField]
+ 
   return verify(token, secret) as JwtPayload
   // TODO: Implement token verification
   // You should implement it similarly to how it was implemented for the exercise for the lesson 5
@@ -86,14 +86,27 @@ function getToken(authHeader: string): string {
   return token
 }
 
-async function getSecret(){
-  if (cachedSecret) return cachedSecret
+handler.use(
+  secretsManager({
+    awsSdkOptions: { region: 'us-east-1' },
+    cache: true,
+    cacheExpiryInMillis: 60000,
+    // Throw an error if can't read the secret
+    throwOnFailedCall: true,
+    secrets: {
+      AUTH0_SECRET: secretId
+    }
+  })
+)
 
-  const data = await client
-  .getSecretValue({
-    SecretId : secretId
-  }).promise()
+// async function getSecret(){
+//   if (cachedSecret) return cachedSecret
 
-  cachedSecret = data.SecretString
-  return JSON.parse(cachedSecret)
-}
+//   const data = await client
+//   .getSecretValue({
+//     SecretId : secretId
+//   }).promise()
+
+//   cachedSecret = data.SecretString
+//   return JSON.parse(cachedSecret)
+// }
