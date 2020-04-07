@@ -33,7 +33,9 @@ const items = result.Items
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
-    body: JSON.stringify(items)
+    body: JSON.stringify({
+      items
+    })
   }
 
 }
