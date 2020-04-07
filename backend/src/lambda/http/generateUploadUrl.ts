@@ -24,8 +24,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   updateItem(imageUrl, todoId, todosTable)
   const newItem ={
-      iamgeUrl: imageUrl,
-      uploadUrl: url
+      url: url ,
+      uploadUrl: imageUrl
     }
 
   return {
@@ -48,7 +48,7 @@ async function updateItem(imageUrl:string, todoId:string,  todosTable:string){
         ExpressionAttributeValues:{
       ":v": imageUrl
     }}).promise()
-     ReturnValues:"ALL_NEW"
+     ReturnValues: "ALL_NEW"
     }
 
 
