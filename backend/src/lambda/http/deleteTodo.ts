@@ -7,6 +7,7 @@ const todosTable = process.env.TODOS_TABLE
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
+  console.log(`Processing event: ${event} todoId:  ${todoId}`)
 
   const params={
     TableName: todosTable,
@@ -21,8 +22,6 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       headers: {
           'Access-Control-Allow-Origin': '*'
       },
-      body: JSON.stringify({
-        result: {Item: "Item deleted successfully"}
-      })
+      body: "Item deleted successfully"
   }
 }
