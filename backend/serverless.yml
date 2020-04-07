@@ -25,8 +25,7 @@ provider:
     USER_ID_INDEX: UserIdIndex
     TODOS_S3_BUCKET: serverless-udagram-asare-todos-${self:provider.stage}
     SIGNED_URL_EXPIRATION: 300
-    AUTH_0_SECRET: AI0-BwTjqQ6yEmn451GDlAlFTvkfdZrlToHLKKeuO-9l3jYxvbv3sLVGcDe2HlB4
-    AUTH_0_SECRET_ID: Auth0Secret-${self:provider.stage}
+    AUTH_0_SECRET_ID: Auth0Secret-${self:service.name}-${self:provider.stage}
     AUTH_0_SECRET_FIELD: auth0Secret
 
 
@@ -34,6 +33,18 @@ functions:
 
   Auth:
     handler: src/lambda/auth/auth0Authorizer.handler
+
+    iamRoleStatementsName: ${self:service.name}-auth-role-${self:provider.stage}
+    iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - secretsmanager:GetSecretValue
+      Resource: !Ref Auth0Secret
+
+    - Effect: Allow
+      Action:
+        - kms:Decrypt
+      Resource: !GetAtt KMSKey.Arn
 
   # TODO: Configure this function
   GetTodos:
@@ -226,7 +237,7 @@ resources:
     KMSKeyAlias:
       Type: AWS::KMS::Alias
       Properties:
-        AliasName: alias/auth0Key-${self:provider.stage}
+        AliasName: alias/auth0Key-${self:service.name}-${self:provider.stage}
         TargetKeyId: !Ref KMSKey
 
     Auth0Secret:
