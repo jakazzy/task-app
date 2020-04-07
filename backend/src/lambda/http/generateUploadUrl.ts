@@ -22,10 +22,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const url = getUploadUrl(imageId)
   const imageUrl = `https://${bucketName}.s3.amazonaws.com/${imageId}`
 
-  updateItem(imageUrl, todoId, todosTable)
-  // const newItem ={
-      
-  //   }
+  const newItem = await updateItem(imageUrl, todoId, todosTable).then(response => response)
+ console.log('updated item: ', newItem)
 
   return {
     statusCode: 200,
@@ -43,7 +41,7 @@ async function updateItem(imageUrl:string, todoId:string,  todosTable:string){
     await docClient
     .update({
         TableName: todosTable,
-        Key: { todoId },
+        Key: { "todoId": todoId },
         UpdateExpression: "set attachmentUrl = :v",
         ExpressionAttributeValues:{
       ":v": imageUrl
