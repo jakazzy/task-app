@@ -11,7 +11,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const updatedTodo: UpdateTodoRequest = JSON.parse(event.body)
 
   // TODO: Update a TODO item with the provided id using values in the "updatedTodo" object
- const result = updateTodo(updatedTodo, todoId, todosTable)
+ const result = await updateTodo(updatedTodo, todoId, todosTable).then(response => response.Attributes)
 
 
 
@@ -27,20 +27,23 @@ return {
 }
 
 async function updateTodo( updatedTodo,todoId, todosTable){
-    console.log(`Updated Todo value: ${updatedTodo.name} , ${updatedTodo.dueDate} ${updatedTodo.done}`)
-    await docClient
+    console.log(`Updated Todo value: ${updatedTodo.name} , ${updatedTodo.dueDate}, ${updatedTodo.done}, ${todoId}, ${todosTable}`)
+    return await docClient
     .update({
             TableName: todosTable,
-    Key: {  todoId },
-    UpdateExpression: "set #n = :a, dueDate = :b, done = :c",
-    ExpressionAttributeValues:{
-      ":a": updatedTodo.name,
-      ":b": updatedTodo.dueDate,
-      ":c": updatedTodo.done
-    },
-    ExpressionAttributeNames:{
-      "#n": "name"
-    },
-    ReturnValues:"UPDATED_NEW"
-    }).promise()
+            Key: {  "todoId": todoId },
+            ConditionExpression: 'attribute_exists(todoId)',
+            UpdateExpression: 'set #n = :a, dueDate = :b, done = :c',
+            ExpressionAttributeValues:{
+              ":a": updatedTodo['name'],
+              ":b": updatedTodo.dueDate,
+              ":c": updatedTodo.done 
+            },
+            ExpressionAttributeNames:{
+              "#n": "name"
+            },
+            ReturnValues: "UPDATED_NEW"
+          }).promise()
+
+
 }
