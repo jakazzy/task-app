@@ -17,6 +17,7 @@ export class TodoAccess {
 
   async getAllTodos(userId: string): Promise<TodoItem[]> {
     console.log('Getting all todos')
+    
     const result = await this.docClient.query({
         TableName : this.todosTable,
         IndexName: this.userIdIndex,
@@ -31,15 +32,18 @@ export class TodoAccess {
     return items as TodoItem[]
  }
 
-//   async createTodo(todo: TodoItem): Promise<TodoItem> {
-//     console.log(`Creating a todo with todo id ${todo.todoId}`)
-//     await this.docClient.put({
-//       TableName: this.todosTable,
-//       Item: todo
-//     }).promise()
+  async createTodo(todo: TodoItem): Promise<TodoItem> {
+    console.log(`Creating a todo with todo id ${todo.todoId}`)
 
-//     return todo
-//   }
+    await this.docClient.put({
+      TableName: this.todosTable,
+      Item: todo
+    }).promise()
+
+    return todo
+  }
+
+
 }
 
 // function createDynamoDBClient() {
