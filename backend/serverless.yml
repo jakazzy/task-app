@@ -33,6 +33,9 @@ provider:
   runtime: nodejs12.x
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  tracing:
+    lambda: true
+    apiGateway: true
 
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
@@ -63,6 +66,12 @@ functions:
       Action:
         - kms:Decrypt
       Resource: !GetAtt KMSKey.Arn
+      
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource: "*"
 
   # TODO: Configure this function
   GetTodos:
@@ -84,7 +93,11 @@ functions:
       Action:
         - dynamodb:Query
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
-    
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource: "*"
 
   # TODO: Configure this function
   CreateTodo:
@@ -109,7 +122,11 @@ functions:
       Action:
         - dynamodb:PutItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource: "*"
   # TODO: Configure this function
   UpdateTodo:
     handler: src/lambda/http/updateTodo.handler
@@ -133,7 +150,11 @@ functions:
       Action:
         - dynamodb:UpdateItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource: "*"
 
   # TODO: Configure this function
   DeleteTodo:
@@ -151,7 +172,11 @@ functions:
       Action:
         - dynamodb:DeleteItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODOS_TABLE}
-    
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource: "*"
 
   # TODO: Configure this function
   GenerateUploadUrl:
@@ -174,7 +199,11 @@ functions:
       - s3:PutObject
       - s3:GetObject
       Resource: arn:aws:s3:::${self:provider.environment.TODOS_S3_BUCKET}/*
-      
+    - Effect: Allow
+      Action:
+        - xray:PutTraceSegments
+        - xray:PutTelemetryRecords
+      Resource: "*"
 
 resources:
   Resources:
