@@ -36,3 +36,7 @@ export async function generateUploadUrl( imageUrl: string, todoId: string){
 export function getUploadUrl(imageId: string){ 
     return todoAccess.getUploadUrl(imageId)
 }
+
+export function deleteTodo(todoId: string){
+    return todoAccess.deleteTodo(todoId)
+}

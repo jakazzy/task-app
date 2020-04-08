@@ -89,6 +89,14 @@ export class TodoAccess {
       Expires: parseInt(this.urlExpiration, 10) 
     })
   }
+
+  async deleteTodo( todoId: string){
+   return  await this.docClient.delete({
+      TableName: this.todosTable,
+      Key: { "todoId": todoId }
+    }
+  ).promise()
+  }
 }
 
 
