@@ -1,12 +1,13 @@
 import { TodoItem } from '../models/TodoItem'
 import { TodoAccess } from '../dataLayer/todosAccess'
-import {  CreateTodoRequest } from '../requests/CreateTodoRequest'
+import { CreateTodoRequest } from '../requests/CreateTodoRequest'
+import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 import * as uuid from 'uuid'
 
 const todoAccess = new TodoAccess()
 
 export async function getAllTodos(userId: string): Promise<TodoItem[]>{
-    return todoAccess.getAllTodos(userId)
+    return await todoAccess.getAllTodos(userId)
 }
 
 export async function createTodo( createTodoRequest: CreateTodoRequest, userId: string ): Promise<TodoItem>{
@@ -21,4 +22,8 @@ export async function createTodo( createTodoRequest: CreateTodoRequest, userId: 
         dueDate: createTodoRequest.dueDate,
         done: false
     })
+}
+
+export async function updateTodo( todo: UpdateTodoRequest, id: string){
+    return await todoAccess.updateTodo(todo, id)
 }
