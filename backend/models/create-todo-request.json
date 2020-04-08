@@ -17,11 +17,7 @@
       }
     },
     "required": [
-      "name",
-      "dueDate",
-      "done"
-
-    ],
+      "name"],
     "additionalProperties": false
   }
 
