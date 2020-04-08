@@ -7,12 +7,17 @@ import { TodoUpdate } from '../models/TodoUpdate'
 // import * as AWSXRay from 'aws-xray-sdk'
 
 
+
 export class TodoAccess {
 
   constructor(
     private readonly docClient: DocumentClient = new AWS.DynamoDB.DocumentClient(),
     private readonly todosTable = process.env.TODOS_TABLE,
-    private readonly userIdIndex = process.env.USER_ID_INDEX
+    private readonly userIdIndex = process.env.USER_ID_INDEX,
+    private readonly bucketName = process.env.TODOS_S3_BUCKET,
+    private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION,
+    private readonly s3 = new AWS.S3({signatureVersion: 'v4'}),
+   
     ) {
   }
 
@@ -64,7 +69,28 @@ export class TodoAccess {
           }).promise()
 
   }
+
+  async generateUploadUrl(imageUrl: string, todoId: string){
+    await this.docClient
+    .update({
+        TableName: this.todosTable,
+        Key: { "todoId": todoId },
+        UpdateExpression: "set attachmentUrl = :v",
+        ExpressionAttributeValues:{
+      ":v": imageUrl
+    }}).promise()
+     ReturnValues: "ALL_NEW"
+  }
+
+  getUploadUrl(imageId: string) {
+    return this.s3.getSignedUrl('putObject', {
+      Bucket: this.bucketName,
+      Key: imageId,
+      Expires: parseInt(this.urlExpiration, 10) 
+    })
+  }
 }
+
 
 // function createDynamoDBClient() {
 //   if (process.env.IS_OFFLINE) {

@@ -6,6 +6,7 @@ import * as uuid from 'uuid'
 
 const todoAccess = new TodoAccess()
 
+
 export async function getAllTodos(userId: string): Promise<TodoItem[]>{
     return await todoAccess.getAllTodos(userId)
 }
@@ -26,4 +27,12 @@ export async function createTodo( createTodoRequest: CreateTodoRequest, userId: 
 
 export async function updateTodo( todo: UpdateTodoRequest, id: string){
     return await todoAccess.updateTodo(todo, id)
+}
+
+export async function generateUploadUrl( imageUrl: string, todoId: string){
+    return todoAccess.generateUploadUrl(imageUrl, todoId)
+}
+
+export function getUploadUrl(imageId: string){ 
+    return todoAccess.getUploadUrl(imageId)
 }
